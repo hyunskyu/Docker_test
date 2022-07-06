@@ -20,7 +20,7 @@ jobs:
          echo ${{ github.head_ref }}
         
          cd Dockerfiles
-         docker build --force-rm --no-cache -f build.dockerfile -t "cpp-cv-project-template:base" --build-arg BRANCH=${{ github.head_ref }} . 
+         docker build --force-rm --no-cache -f build.dockerfile -t "cnr_drone" --build-arg BRANCH=${{ github.head_ref }} . 
          echo "=== Build finished==="
          
       - name: Clean up Docker image if build fails
