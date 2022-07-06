@@ -1,19 +1,32 @@
-name: Docker
+name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+    - main
+    - development
+  pull_request:
+    branches: [development]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+
     steps:
-      - name: 'Checkout GitHub Action'
-        uses: actions/checkout@v2
-      - name: Build and push docker
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-          repository: DOCKER_REPOSITORY
-          tags: latest
+      - uses: actions/checkout@v2
+      - name: Build Docker image
+        run: |
+         echo "=== Build start==="
+         echo ${{ github.head_ref }}
+        
+         cd Dockerfiles
+         docker build --force-rm --no-cache -f build.dockerfile -t "cnr_drone" --build-arg BRANCH=${{ github.head_ref }} . 
+         echo "=== Build finished==="
+         
+      - name: Clean up Docker image if build fails
+        if: failure()
+        run: |
+         echo "=== Remove failed image start==="
+         docker rmi -f $(docker images -f "dangling=true" -q)
+         docker images 
+         echo "=== Removal finished==="
