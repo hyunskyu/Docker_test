@@ -1,0 +1,15 @@
+#Ubuntu 18:04
+FROM cnr_drone:latests
+
+#Author name
+MAINTAINER Kyu-Hyun Sung
+
+# nvidia-container-runtime
+ENV NVIDIA_VISIBLE_DEVICES \  
+    ${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES \  
+    ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+
+ARG DEBIAN_FRONTEND=noninteractive
+
